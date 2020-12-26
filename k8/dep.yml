@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petc-deployment
+  labels:
+    app: petc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petc
+  template:
+    metadata:
+      labels:
+        app: petc
+    spec:
+      containers:
+      - name: petc
+        image: ibraheemsar/k8
+        ports:
+        - containerPort: 8080
+      - name: mysql
+        image: mysql:5.7
+        ports:
+        - containerPort: 3306
+        env: # All the environment variables that we need and we get them from our configMap
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: petc-configmap # tha name of the configMap 
+              key: mysql_root_password
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: petc-configmap # tha name of the configMap
+              key: mysql_allow_empty_password
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: petc-configmap # tha name of the configMap 
+              key: mysql_user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: petc-configmap # tha name of the configMap 
+              key: mysql_password
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: petc-configmap # tha name of the configMap
+              key: mysql_database
